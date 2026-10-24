@@ -1,0 +1,34 @@
+{
+  "GET главная страница" : {
+    "transaction" : "GET главная страница",
+    "sampleCount" : 1000,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 22.56299999999999,
+    "medianResTime" : 23.0,
+    "minResTime" : 21.0,
+    "maxResTime" : 49.0,
+    "pct1ResTime" : 23.0,
+    "pct2ResTime" : 23.0,
+    "pct3ResTime" : 24.0,
+    "throughput" : 98.28009828009827,
+    "receivedKBytesPerSec" : 1074.938574938575,
+    "sentKBytesPerSec" : 11.3252457002457
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 1000,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 22.56299999999999,
+    "medianResTime" : 23.0,
+    "minResTime" : 21.0,
+    "maxResTime" : 49.0,
+    "pct1ResTime" : 23.0,
+    "pct2ResTime" : 23.0,
+    "pct3ResTime" : 24.0,
+    "throughput" : 98.28009828009827,
+    "receivedKBytesPerSec" : 1074.938574938575,
+    "sentKBytesPerSec" : 11.3252457002457
+  }
+}
