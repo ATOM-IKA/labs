@@ -64,8 +64,9 @@ def bullet(text):
 def code(text):
     lines = text.rstrip("\n").split("\n")
     out = []
-    for ln in lines:
-        out.append('<w:p><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/><w:jc w:val="left"/></w:pPr>'
+    for i, ln in enumerate(lines):
+        keep = "<w:keepNext/><w:keepLines/>" if i < len(lines) - 1 else ""
+        out.append(f'<w:p><w:pPr>{keep}<w:spacing w:after="0" w:line="240" w:lineRule="auto"/><w:jc w:val="left"/></w:pPr>'
                    f'<w:r><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/>'
                    f'<w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t xml:space="preserve">{escape(ln) or " "}</w:t></w:r></w:p>')
     return "".join(out)
