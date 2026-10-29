@@ -101,7 +101,8 @@ def png_size(path):
     return struct.unpack(">II", head[16:24])
 
 
-def build(blocks, out_path):
+def build(blocks, out_path, frame=True):
+    """frame=False: без рамки и штампа (для лекций), рамка нужна только в лабораторных."""
     zin = zipfile.ZipFile(TEMPLATE)
     doc = zin.read("word/document.xml").decode("utf8")
     rels = zin.read("word/_rels/document.xml.rels").decode("utf8")
@@ -110,6 +111,8 @@ def build(blocks, out_path):
     sect = re.findall(r"<w:sectPr.*?</w:sectPr>", doc, re.S)[-1]
     sect = sect.replace('<w:pgNumType w:start="3"/>', '<w:pgNumType w:start="1"/>')
     sect = sect.replace('<w:type w:val="continuous"/>', "")
+    if not frame:
+        sect = re.sub(r"<w:(?:header|footer)Reference[^>]*/>", "", sect)
 
     media, body, n = {}, [], 0
     for b in blocks:
