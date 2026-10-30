@@ -1,0 +1,100 @@
+"""Характеристика на Шитикову А.Г. по образцу inbox/Khankishiev_kharakteristika.docx.
+
+Берёт образец как шаблон (поля, шрифты, подписи сохраняются), заменяет текст абзацев.
+"""
+import re
+import zipfile
+
+SRC = "/root/labs/inbox/Khankishiev_kharakteristika.docx"
+OUT = "/root/labs/characteristics/Shitikova_kharakteristika.docx"
+
+PARA = re.compile(r"<w:p\b[^>]*?/>|<w:p\b[^>]*>.*?</w:p>", re.S)
+
+
+def first_rpr(p):
+    m = re.search(r"<w:r\b[^>]*>(<w:rPr>.*?</w:rPr>)?<w:t", p, re.S)
+    return m.group(1) or "" if m else ""
+
+
+def ppr(p):
+    m = re.search(r"<w:pPr>.*?</w:pPr>", p, re.S)
+    return m.group(0) if m else ""
+
+
+def retext(p, text):
+    """Абзац с прежними свойствами, но одним прогоном с новым текстом."""
+    return f'<w:p>{ppr(p)}<w:r>{first_rpr(p)}<w:t xml:space="preserve">{text}</w:t></w:r></w:p>'
+
+
+z = zipfile.ZipFile(SRC)
+doc = z.read("word/document.xml").decode("utf8")
+head, rest = doc.split("<w:body>", 1)
+body, tail = rest.rsplit("<w:sectPr", 1)
+tail = "<w:sectPr" + tail
+paras = PARA.findall(body)
+assert "".join(paras) == body, "разбор абзацев не покрыл тело документа"
+
+def text_of(p):
+    return "".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", p))
+
+idx = {}
+for i, p in enumerate(paras):
+    t = text_of(p)
+    for key, start in [("naa", "на Ханкишиев"), ("student", "обучающегося"), ("born", "01.06.2010"), ("enrol", "Ханкишиев Егор Денсович поступил"),
+                       ("study", "За время обучения"), ("char1", "Ханкишиев Егор характеризуется"), ("char2", "По складу характера"),
+                       ("law", "За время учебы"), ("date", "          28")]:
+        if t.startswith(start) or (key == "date" and "28" in t and "2026" in t):
+            idx[key] = i
+assert len(idx) == 9, idx
+
+NEW = {
+    "naa": "на Шитикову Анастасию Геннадьевну, ",
+    "student": "обучающуюся ОГАПОУ «Белгородский индустриальный колледж»,",
+    "enrol": "Шитикова Анастасия Геннадьевна поступила в ОГАПОУ «Белгородский индустриальный колледж» в 2026 году по специальности 09.02.13 «Интеграция решений с применением технологий искусственного интеллекта».",
+    "study": "За время обучения в колледже Шитикова Анастасия Геннадьевна проявила себя старательной обучающейся, получает хорошие оценки по изучаемым учебным дисциплинам. Пропусков занятий без уважительных причин и нарушения дисциплины за обучающейся Шитиковой А.Г. не отмечено.",
+    "char1": "Шитикова Анастасия характеризуется как дисциплинированный, ответственный человек. Имеет спокойный характер, избегает конфликтных ситуаций. Со всеми имеет ровные отношения. С поставленными задачами справляется в срок. Отношение к учебе и труду добросовестное.",
+    "char2": "По складу характера общительна, уравновешена, с легкостью находит контакт с обучающимися в группе и в колледже. Зарекомендовала себя дисциплинированной, целеустремлённой, сообразительной обучающейся. В повседневной жизни спокойная, с преподавателями и взрослыми вежлива, на замечания реагирует адекватно.",
+    "law": "За время учебы в колледже противоправных поступков не совершала. Случаев употребления спиртных напитков и наркотических веществ в учебное время не было. Физически здорова.",
+    "date": "          30.10.2026 г.",
+}
+ACTIVE = ("Анастасия является активисткой группы и колледжа. Принимает активное участие в мероприятиях, проводимых в группе и в колледже, "
+          "проявляет инициативу, охотно берёт на себя общественные поручения и помогает в организации общих дел. Участие в общественной жизни "
+          "способствует развитию её коммуникативных и организаторских качеств, умения работать в коллективе.")
+PARENTS = ("Родители Анастасии принимают активное участие в её развитии и жизни: интересуются успехами дочери, поддерживают её участие "
+           "в мероприятиях и общественной жизни колледжа, поддерживают связь с куратором группы и колледжем. "
+           "Благоприятная семейная обстановка положительно влияет на учёбу и личностный рост обучающейся.")
+CLOSING = "Характеристика выдана для предоставления на конкурс."
+
+out = list(paras)
+for key, text in NEW.items():
+    out[idx[key]] = retext(paras[idx[key]], text)
+# дата рождения: меняем только первый прогон с датой
+out[idx["born"]] = paras[idx["born"]].replace("01.06.2010", "08.04.2010")
+# новые абзацы по образцу абзаца характера
+tmpl = paras[idx["char2"]]
+out[idx["char1"]] = out[idx["char1"]] + retext(tmpl, ACTIVE)
+out[idx["char2"]] = out[idx["char2"]] + retext(tmpl, PARENTS)
+
+blank_after = idx["law"] + 1
+while text_of(out[blank_after]) == "" and text_of(out[blank_after + 1]) == "":
+    del out[blank_after + 1]
+out[idx["law"]] = out[idx["law"]] + retext(tmpl, CLOSING)
+
+# абзацы с последним текстом, датой и подписями держим вместе, чтобы подпись не оставалась на листе одна
+def keep(p):
+    return p.replace("<w:pPr>", "<w:pPr><w:keepNext/>", 1) if "<w:pPr>" in p and "<w:keepNext/>" not in p else p
+last_text = len(out) - 1
+for i in range(len(out) - 1, -1, -1):
+    if text_of(out[i]).startswith("Характеристика выдана") or text_of(out[i]).startswith("За время учебы"):
+        last_text = i
+        break
+for i in range(last_text, len(out) - 1):
+    out[i] = keep(out[i])
+new_doc = head + "<w:body>" + "".join(out) + tail
+with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as zo:
+    for item in z.infolist():
+        data = z.read(item.filename)
+        if item.filename == "word/document.xml":
+            data = new_doc.encode("utf8")
+        zo.writestr(item, data)
+print("saved", OUT)
