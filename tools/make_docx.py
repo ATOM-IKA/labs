@@ -65,8 +65,11 @@ def code(text):
     lines = text.rstrip("\n").split("\n")
     out = []
     for i, ln in enumerate(lines):
-        keep = "<w:keepNext/><w:keepLines/>" if i < len(lines) - 1 else ""
-        out.append(f'<w:p><w:pPr>{keep}<w:spacing w:after="0" w:line="240" w:lineRule="auto"/><w:jc w:val="left"/></w:pPr>'
+        # вместе держим только начало и конец блока, середина может переходить на другую страницу
+        keep = "<w:keepNext/><w:keepLines/>" if i < len(lines) - 1 and (i < 2 or i >= len(lines) - 3 or len(lines) <= 12) else ""
+        before = 120 if i == 0 else 0
+        after = 160 if i == len(lines) - 1 else 0
+        out.append(f'<w:p><w:pPr>{keep}<w:spacing w:before="{before}" w:after="{after}" w:line="240" w:lineRule="auto"/><w:jc w:val="left"/></w:pPr>'
                    f'<w:r><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/>'
                    f'<w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t xml:space="preserve">{escape(ln) or " "}</w:t></w:r></w:p>')
     return "".join(out)
@@ -102,8 +105,24 @@ def png_size(path):
     return struct.unpack(">II", head[16:24])
 
 
-def build(blocks, out_path, frame=True):
-    """frame=False: без рамки и штампа (для лекций), рамка нужна только в лабораторных."""
+def stamp_names(footer, author, reviewer):
+    """Подставляет ФИО в штамп. Фамилия в образце разбита на три прогона текста: «Кучер У», «.», «Д.»."""
+    def swap(xml, parts, new):
+        pat = (r"(<w:t[^>]*>)" + re.escape(parts[0]) + r"(</w:t>)(.*?)(<w:t[^>]*>)" + re.escape(parts[1]) +
+               r"(</w:t>)(.*?)(<w:t[^>]*>)" + re.escape(parts[2]) + r"(</w:t>)")
+        return re.sub(pat, lambda m: f"{m[1]}{escape(new)}{m[2]}{m[3]}{m[4]}{m[5]}{m[6]}{m[7]}{m[8]}", xml, flags=re.S)
+    if author is not None:
+        footer = swap(footer, ("Кучер У", ".", "Д."), author)
+    if reviewer is not None:
+        footer = swap(footer, ("Воробьева Д", ".", "А."), reviewer)
+    return footer
+
+
+def build(blocks, out_path, frame=True, author=None, reviewer=None):
+    """frame=False: без рамки и штампа (для лекций), рамка нужна только в лабораторных.
+
+    author, reviewer: ФИО в штампе (None оставляет фамилии из образца, "" очищает строку).
+    """
     zin = zipfile.ZipFile(TEMPLATE)
     doc = zin.read("word/document.xml").decode("utf8")
     rels = zin.read("word/_rels/document.xml.rels").decode("utf8")
@@ -173,6 +192,8 @@ def build(blocks, out_path, frame=True):
                 data = rels.encode("utf8")
             elif item.filename == "[Content_Types].xml":
                 data = ctypes.encode("utf8")
+            elif item.filename == "word/footer1.xml":
+                data = stamp_names(data.decode("utf8"), author, reviewer).encode("utf8")
             zout.writestr(item, data)
         for name, data in media.items():
             zout.writestr(name, data)
