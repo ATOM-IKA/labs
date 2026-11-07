@@ -47,12 +47,11 @@ def para(text, jc="both", first=709, bold=False, keep=False, size=SZ, before=0, 
 
 
 def heading(level, text):
-    spacing = ('<w:spacing w:after="120" w:line="360" w:lineRule="auto"/>' if level == 1 else
-               '<w:spacing w:before="120" w:after="120" w:line="360" w:lineRule="auto"/>')
-    rpr = (f'<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'
-           f'{SZ if level == 1 else ""}')
-    return (f'<w:p><w:pPr><w:pStyle w:val="{level}"/><w:keepNext/>{spacing}</w:pPr>'
-            f'<w:r><w:rPr>{rpr}</w:rPr><w:t xml:space="preserve">{escape(text)}</w:t></w:r></w:p>')
+    """Название раздела обычным абзацем (без стилей заголовков, чтобы в Word не появлялись сворачиваемые блоки)."""
+    style = "<w:b/><w:bCs/>" if level == 1 else "<w:b/><w:bCs/><w:i/><w:iCs/>"
+    before = 0 if level == 1 else 120
+    return (f'<w:p><w:pPr><w:keepNext/><w:spacing w:before="{before}" w:after="120" w:line="360" w:lineRule="auto"/><w:jc w:val="left"/></w:pPr>'
+            f'<w:r><w:rPr>{style}{SZ}</w:rPr><w:t xml:space="preserve">{escape(text)}</w:t></w:r></w:p>')
 
 
 def bullet(text):
@@ -147,6 +146,8 @@ def build(blocks, out_path, frame=True, author=None, reviewer=None):
             body.append(para(b[1]))
         elif k == "bullets":
             body += [bullet(t) for t in b[1]]
+        elif k == "dashes":
+            body += [para("- " + t, first=709) for t in b[1]]
         elif k == "table":
             body.append(table(b[1], b[2]))
         elif k == "code":
