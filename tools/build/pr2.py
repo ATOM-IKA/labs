@@ -12,6 +12,7 @@ module_text = text.split("\n\n\nprint")[0]
 fig = Figures()
 stats_shot, stats_ref = fig.code("pr2_stats", "Функция statistics")
 hal_shot, hal_ref = fig.code("pr2_halstead", "Текст программы halstead.py")
+out_shot, out_ref = fig.code("pr2_out", "Результат выполнения программы")
 
 ops, opd = halstead_count.count(module_text, "statistics")
 n1, n2, N1, N2 = len(ops), len(opd), sum(ops.values()), sum(opd.values())
@@ -45,8 +46,8 @@ blocks = [
     ("p", f"Словарь n = {n1} + {n2} = {m['n']}, длина реализации N = {N1} + {N2} = {m['N']}. Входным операндом является numbers, выходными - biggest и average, поэтому n2* = 3. "
           "Метрики рассчитаны программой halstead.py, текст которой приведён на " + hal_ref + "."),
     *hal_shot,
-    ("p", "Результат выполнения программы:"),
-    ("code", output),
+    ("p", "Результат выполнения программы показан на " + out_ref + "."),
+    *out_shot,
     ("p", f"Для проверки расчёта по формулам: объём V = {m['N']}·log2({m['n']}) = {f(m['V'])} бит, потенциальный объём V* = 5·log2(5) = {f(m['V_pot'])} бит, уровень программы L = {f(m['V_pot'])}/{f(m['V'])} = {f(m['L'], 3)}, "
           f"работа по программированию E = {f(m['V'])}/{f(m['L'], 3)} = {f(m['E'], 1)}, время программирования T = {f(m['E'], 1)}/18 = {f(m['T'], 1)} с."),
     ("h1", "Оценка качества реализации"),

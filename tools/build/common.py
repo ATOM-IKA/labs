@@ -62,7 +62,7 @@ class Figures:
         return ("image", path, width, f"Рисунок {self.n} - {caption}")
 
     def code(self, key, caption):
-        files = sorted(glob.glob(f"{SHOTS}/{key}_*.png"))
+        files = sorted(glob.glob(f"{SHOTS}/{key}_[0-9].png"))
         blocks, numbers = [], []
         for i, path in enumerate(files, 1):
             blocks.append(self.add(path, caption + (f" (часть {i})" if len(files) > 1 else "")))
