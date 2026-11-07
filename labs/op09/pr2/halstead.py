@@ -1,14 +1,13 @@
 import math
 
-operators = {"def": 1, "if": 5, "==": 5, "return": 6, "+": 1, "-": 1, "*": 1, "/": 1}
-operands = {"operation": 4, "'+'": 1, "a": 4, "b": 5, "'-'": 1, "'*'": 1, "'/'": 1, "0": 1,
-            "'Деление на ноль'": 1, "'Неизвестная операция'": 1}
+operators = {"def": 1, "=": 5, "[]": 1, "for": 1, "+": 1, "if": 1, ">": 1, "/": 1, "len()": 1, "return": 1}
+operands = {"total": 4, "0": 2, "biggest": 4, "numbers": 3, "x": 4, "average": 2}
 
 n1 = len(operators)
 n2 = len(operands)
 N1 = sum(operators.values())
 N2 = sum(operands.values())
-n2_star = 4
+n2_star = 3
 
 n = n1 + n2
 N = N1 + N2

@@ -73,6 +73,10 @@ class Counter2(ast.NodeVisitor):
             self.operators[OPERATOR_NAMES[type(op)]] += 1
         self.generic_visit(node)
 
+    def visit_Subscript(self, node):
+        self.operators["[]"] += 1
+        self.generic_visit(node)
+
     def visit_Call(self, node):
         name = node.func.id if isinstance(node.func, ast.Name) else ast.unparse(node.func)
         self.operators[name + "()"] += 1
