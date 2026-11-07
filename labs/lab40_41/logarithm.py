@@ -26,8 +26,7 @@ class Logarithm(Function):
         return math.log(x) / math.log(self._base)
 
     def derivative(self):
-        base = self._base
-        return Derivative("1/(x*ln" + str(base) + ")", lambda x: 1 / (x * math.log(base)))
+        return Derivative("1/(x*ln" + str(self._base) + ")", self._base)
 
     def info(self):
         print("Логарифм по основанию", self._base, "-", self._name)

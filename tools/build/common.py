@@ -32,3 +32,39 @@ def echo_run(path, answers):
     )
     done = subprocess.run([sys.executable, "-c", driver], cwd=folder, capture_output=True, text=True)
     return (done.stdout + done.stderr).rstrip("\n")
+
+
+import glob  # noqa: E402
+
+from make_docx import png_size  # noqa: E402
+
+SHOTS = "/root/labs/tools/build/data/shots"
+
+
+def _ref(numbers):
+    if len(numbers) == 1:
+        return f"рисунке {numbers[0]}"
+    if len(numbers) == 2:
+        return f"рисунках {numbers[0]} и {numbers[1]}"
+    return f"рисунках {numbers[0]}-{numbers[-1]}"
+
+
+class Figures:
+    """Сквозная нумерация рисунков в отчёте; снимки кода из VS Code лежат в data/shots."""
+
+    def __init__(self):
+        self.n = 0
+
+    def add(self, path, caption, width=None):
+        self.n += 1
+        if width is None:
+            width = min(16.5, png_size(path)[0] / 60)
+        return ("image", path, width, f"Рисунок {self.n} - {caption}")
+
+    def code(self, key, caption):
+        files = sorted(glob.glob(f"{SHOTS}/{key}_*.png"))
+        blocks, numbers = [], []
+        for i, path in enumerate(files, 1):
+            blocks.append(self.add(path, caption + (f" (часть {i})" if len(files) > 1 else "")))
+            numbers.append(self.n)
+        return blocks, _ref(numbers)

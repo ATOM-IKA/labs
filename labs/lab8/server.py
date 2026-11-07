@@ -1,7 +1,10 @@
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-page = ("<html><body><h1>ADRENALINE</h1>" + "<p>каталог спортивной одежды</p>" * 200 + "</body></html>").encode("utf8")
+text = "<html><body><h1>ADRENALINE</h1>"
+text = text + "<p>каталог спортивной одежды</p>" * 200
+text = text + "</body></html>"
+page = text.encode("utf8")
 
 
 class Handler(BaseHTTPRequestHandler):

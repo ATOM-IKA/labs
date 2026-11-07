@@ -1,7 +1,14 @@
-from common import build, read, run
+from common import Figures, build, run
 
 FOLDER = "/root/labs/labs/lab40_41"
 output = run(f"{FOLDER}/main.py")
+
+fig = Figures()
+mods = []
+for key, name in [("lab40_function", "function.py"), ("lab40_derivative", "derivative.py"), ("lab40_logarithm", "logarithm.py"),
+                  ("lab40_natural", "natural_logarithm.py"), ("lab40_main", "main.py")]:
+    shot, _ = fig.code(key, "Модуль " + name)
+    mods += shot
 
 blocks = [
     ("title", "Лабораторная работа №40-41"),
@@ -13,25 +20,17 @@ blocks = [
           "виртуальный метод, который переопределяется в одном наследнике и не переопределяется в другом, и вызов конструктора родителя."),
     ("h1", "Проектирование классов"),
     ("p", "Спроектировано четыре класса. Базовый класс Function описывает функцию одной переменной и находится в модуле function.py. От него наследуются Logarithm (логарифм по произвольному основанию, модуль logarithm.py) "
-          "и Derivative (производная, заданная формулой, модуль derivative.py). Натуральный логарифм является частным случаем логарифма с основанием e, поэтому класс NaturalLogarithm из модуля natural_logarithm.py наследуется от Logarithm. "
+          "и Derivative (производная логарифма, модуль derivative.py). Натуральный логарифм является частным случаем логарифма с основанием e, поэтому класс NaturalLogarithm из модуля natural_logarithm.py наследуется от Logarithm. "
           "Запуск и демонстрация выполняются в файле main.py."),
-    ("p", "Требования задания выполнены следующим образом. Полями являются _name в классе Function, _base в Logarithm и formula в Derivative. "
+    ("p", "Требования задания выполнены следующим образом. Полями являются _name в классе Function, _base в Logarithm и base в Derivative. "
           "Свойство name у Function доступно только для чтения, а свойство base у Logarithm проверяет значение при записи и не допускает основание, не большее нуля или равное единице. "
           "Методы value() и derivative() объявлены в базовом классе и реализованы в наследниках, так как значение и производная у каждой функции свои. "
           "Метод value() класса Logarithm перегружен в NaturalLogarithm, где натуральный логарифм считается напрямую. "
           "Виртуальным методом, который переопределяется в одном наследнике и не переопределяется в другом, является info(): он переопределён в Logarithm и поэтому по-разному выводит логарифм и производную, у которой используется метод базового класса. "
           "Вызов конструктора родителя выполняется через super().__init__(), а каждый конструктор выводит сообщение, поэтому цепочка вызовов видна при запуске."),
     ("h1", "Тексты модулей"),
-    ("p", "Модуль function.py:"),
-    ("code", read(f"{FOLDER}/function.py")),
-    ("p", "Модуль derivative.py:"),
-    ("code", read(f"{FOLDER}/derivative.py")),
-    ("p", "Модуль logarithm.py:"),
-    ("code", read(f"{FOLDER}/logarithm.py")),
-    ("p", "Модуль natural_logarithm.py:"),
-    ("code", read(f"{FOLDER}/natural_logarithm.py")),
-    ("p", "Модуль main.py:"),
-    ("code", read(f"{FOLDER}/main.py")),
+    ("p", "Тексты модулей приведены на рисунках, в порядке: function.py, derivative.py, logarithm.py, natural_logarithm.py и main.py."),
+    *mods,
     ("h1", "Результаты выполнения"),
     ("code", output),
     ("p", "При создании Logarithm сначала выполняется конструктор Function, затем Logarithm, а при создании NaturalLogarithm к ним добавляется собственный конструктор, что подтверждает вызов конструкторов родителей по цепочке. "

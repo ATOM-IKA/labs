@@ -25,7 +25,9 @@ d2 = ln.derivative()
 d1.info()
 d2.info()
 for x in (1, 2, 4):
-    print("(log2)'(" + str(x) + ") =", round(d1.value(x), 4), " (ln)'(" + str(x) + ") =", round(d2.value(x), 4))
+    print("x =", x)
+    print("  (log2)' =", round(d1.value(x), 4))
+    print("  (ln)'   =", round(d2.value(x), 4))
 print()
 
 print("Свойство base")

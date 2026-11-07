@@ -25,7 +25,10 @@ class MySet:
         return result
 
     def __str__(self):
-        return "{" + ", ".join(str(item) for item in self.items) + "}"
+        text = ""
+        for item in self.items:
+            text = text + str(item) + ", "
+        return "{" + text[:-2] + "}"
 
 
 class Lesson:
@@ -35,7 +38,9 @@ class Lesson:
         self.course = course
 
     def __eq__(self, other):
-        return self.day == other.day and self.number == other.number and self.course == other.course
+        if self.day != other.day or self.number != other.number:
+            return False
+        return self.course == other.course
 
     def __str__(self):
         return str(self.number) + ". " + self.course
@@ -52,13 +57,15 @@ class Schedule(MySet):
         self.add(Lesson(day, number, course))
 
     def show_day(self, day):
-        lessons = [lesson for lesson in self.items if lesson.day == day]
-        lessons.sort(key=lambda lesson: lesson.number)
         print(day + ":")
-        if not lessons:
+        found = False
+        for number in range(1, 8):
+            for lesson in self.items:
+                if lesson.day == day and lesson.number == number:
+                    print("  " + str(lesson))
+                    found = True
+        if not found:
             print("  занятий нет")
-        for lesson in lessons:
-            print("  " + str(lesson))
 
     def show_week(self):
         for day in self.days:
@@ -87,15 +94,18 @@ print("Пересечение:", a.intersection(b))
 print()
 
 schedule = Schedule()
-data = [
-    ("Понедельник", 1, "Математика"), ("Понедельник", 2, "Информатика"), ("Понедельник", 3, "Английский язык"),
-    ("Вторник", 1, "Программирование"), ("Вторник", 2, "Физическая культура"),
-    ("Среда", 2, "Математика"), ("Среда", 3, "Основы алгоритмизации"),
-    ("Четверг", 1, "Информатика"), ("Четверг", 2, "Английский язык"), ("Четверг", 3, "Русский язык"),
-    ("Пятница", 1, "Программирование"), ("Пятница", 2, "История"),
-]
-for day, number, course in data:
-    schedule.add_lesson(day, number, course)
+schedule.add_lesson("Понедельник", 1, "Математика")
+schedule.add_lesson("Понедельник", 2, "Информатика")
+schedule.add_lesson("Понедельник", 3, "Английский язык")
+schedule.add_lesson("Вторник", 1, "Программирование")
+schedule.add_lesson("Вторник", 2, "Физическая культура")
+schedule.add_lesson("Среда", 2, "Математика")
+schedule.add_lesson("Среда", 3, "Основы алгоритмизации")
+schedule.add_lesson("Четверг", 1, "Информатика")
+schedule.add_lesson("Четверг", 2, "Английский язык")
+schedule.add_lesson("Четверг", 3, "Русский язык")
+schedule.add_lesson("Пятница", 1, "Программирование")
+schedule.add_lesson("Пятница", 2, "История")
 
 while True:
     print()

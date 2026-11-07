@@ -25,7 +25,8 @@ class TriangleChecker:
         return "Стороны: " + str(self.sides)
 
 
-tests = [(3, 4, 5), (1, 2, 3), (2, 2, 2), (10, 1, 1), (-3, 4, 5), (0, 4, 4), ("3", 4, 5), (3, None, 5), (3.5, 4.5, 6.0)]
+tests = [(3, 4, 5), (1, 2, 3), (2, 2, 2), (10, 1, 1), (-3, 4, 5),
+         (0, 4, 4), ("3", 4, 5), (3, None, 5), (3.5, 4.5, 6.0)]
 for sides in tests:
     checker = TriangleChecker(*sides)
     print(checker, "->", checker.is_triangle())

@@ -15,4 +15,4 @@ class NaturalLogarithm(Logarithm):
         return math.log(x)
 
     def derivative(self):
-        return Derivative("1/x", lambda x: 1 / x)
+        return Derivative("1/x", math.e)

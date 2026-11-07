@@ -1,7 +1,9 @@
 import math
 
-operators = {"def": 1, "=": 5, "[]": 1, "for": 1, "+": 1, "if": 1, ">": 1, "/": 1, "len()": 1, "return": 1}
-operands = {"total": 4, "0": 2, "biggest": 4, "numbers": 3, "x": 4, "average": 2}
+operators = {"def": 1, "=": 5, "[]": 1, "for": 1, "+": 1,
+             "if": 1, ">": 1, "/": 1, "len()": 1, "return": 1}
+operands = {"total": 4, "0": 2, "biggest": 4, "numbers": 3,
+            "x": 4, "average": 2}
 
 n1 = len(operators)
 n2 = len(operands)
@@ -35,7 +37,8 @@ print("Расчётная длина N' =", round(N_calc, 2))
 print("Объём V =", round(V, 2))
 print("Потенциальный объём V* =", round(V_min, 2))
 print("Граничный объём V** =", round(V_limit, 2))
-print("A =", round(A, 2), " B =", round(B, 2), " n2 ожидаемое =", round(n2_expected, 2))
+print("A =", round(A, 2), " B =", round(B, 2))
+print("n2 ожидаемое =", round(n2_expected, 2))
 print("Уровень программы L =", round(L, 3), " L' =", round(L1, 3))
 print("Интеллектуальное содержание I =", round(I, 2))
 print("Работа по программированию E =", round(E, 1))

@@ -3,30 +3,26 @@ def check_side(x):
 
 
 print("Эквивалентное разбиение")
-classes = [("меньше допустимого", 0.05), ("допустимые значения", 5), ("больше допустимого", 150)]
-for name, value in classes:
-    print(f"  {name:20} x = {value:<6} принимается: {check_side(value)}")
+print("меньше допустимого, x = 0.05:", check_side(0.05))
+print("допустимое значение, x = 5:", check_side(5))
+print("больше допустимого, x = 150:", check_side(150))
 
 print("Граничные значения")
-for value in (0.09, 0.1, 0.11, 99.99, 100, 100.01):
-    print(f"  x = {value:<7} принимается: {check_side(value)}")
+for x in [0.09, 0.1, 0.11, 99.99, 100, 100.01]:
+    print("x =", x, check_side(x))
 
-print("Таблица решений для длины и ширины")
-print("  длина  ширина  результат")
-for length in (True, False):
-    for width in (True, False):
-        if length and width:
+print("Таблица решений")
+for length_ok in [True, False]:
+    for width_ok in [True, False]:
+        if length_ok and width_ok:
             result = "площадь вычислена"
-        elif not length:
+        elif not length_ok:
             result = "ошибка в длине"
         else:
             result = "ошибка в ширине"
-        print(f"  {str(length):6} {str(width):7} {result}")
+        print("длина:", length_ok, "ширина:", width_ok, "->", result)
 
 print("Предположение об ошибке")
-for text in ("4,5", " 5 ", "nan", "inf", "1e3", "0,0001"):
-    try:
-        value = float(text.replace(",", "."))
-        print(f"  {text!r:9} -> {value} принимается: {check_side(value)}")
-    except ValueError:
-        print(f"  {text!r:9} -> не число")
+for text in ["4,5", " 5 ", "nan", "inf", "1e3", "0,0001"]:
+    x = float(text.replace(",", "."))
+    print(repr(text), x, check_side(x))

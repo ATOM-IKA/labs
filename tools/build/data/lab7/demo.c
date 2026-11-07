@@ -5,10 +5,10 @@ int main(int argc, char **argv) {
     char name[16];
     char buf[32];
     if (argc > 1) {
-        strcpy(name, argv[1]);        /* копирование без проверки длины */
+        strcpy(name, argv[1]);
     }
-    printf(argv[0]);                  /* строка формата из внешних данных */
-    gets(buf);                        /* чтение без ограничения длины */
-    sprintf(buf, "Hello, %s", name);  /* возможное переполнение buf */
+    printf(argv[0]);
+    gets(buf);
+    sprintf(buf, "Hello, %s", name);
     return 0;
 }
