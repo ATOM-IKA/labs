@@ -1,6 +1,6 @@
 class TriangleChecker:
-    def __init__(self, a, b, c):
-        self.sides = [a, b, c]
+    def __init__(self, sides):
+        self.sides = sides
 
     def is_triangle(self):
         for side in self.sides:
@@ -14,24 +14,11 @@ class TriangleChecker:
             return "Ура, можно построить треугольник!"
         return "Жаль, но из этого треугольник не сделать."
 
-    def __getitem__(self, index):
-        return self.sides[index]
 
-    def __call__(self, a, b, c):
-        self.sides = [a, b, c]
-        return self.is_triangle()
-
-    def __str__(self):
-        return "Стороны: " + str(self.sides)
-
-
-tests = [(3, 4, 5), (1, 2, 3), (2, 2, 2), (10, 1, 1), (-3, 4, 5),
-         (0, 4, 4), ("3", 4, 5), (3, None, 5), (3.5, 4.5, 6.0)]
-for sides in tests:
-    checker = TriangleChecker(*sides)
-    print(checker, "->", checker.is_triangle())
-
-checker = TriangleChecker(3, 4, 5)
-print(checker[0], checker[2])
-print(checker(6, 8, 15))
-print(checker)
+print(TriangleChecker([3, 4, 5]).is_triangle())
+print(TriangleChecker([2, 2, 2]).is_triangle())
+print(TriangleChecker([1, 2, 3]).is_triangle())
+print(TriangleChecker([10, 1, 1]).is_triangle())
+print(TriangleChecker([-3, 4, 5]).is_triangle())
+print(TriangleChecker(["3", 4, 5]).is_triangle())
+print(TriangleChecker([3.5, 4.5, 6.0]).is_triangle())

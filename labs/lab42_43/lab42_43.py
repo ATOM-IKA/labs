@@ -49,13 +49,6 @@ class Lesson:
 class Schedule(MySet):
     days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]
 
-    def add_lesson(self, day, number, course):
-        for lesson in self.items:
-            if lesson.day == day and lesson.number == number:
-                print("Эта пара уже занята")
-                return
-        self.add(Lesson(day, number, course))
-
     def show_day(self, day):
         print(day + ":")
         found = False
@@ -94,18 +87,18 @@ print("Пересечение:", a.intersection(b))
 print()
 
 schedule = Schedule()
-schedule.add_lesson("Понедельник", 1, "Математика")
-schedule.add_lesson("Понедельник", 2, "Информатика")
-schedule.add_lesson("Понедельник", 3, "Английский язык")
-schedule.add_lesson("Вторник", 1, "Программирование")
-schedule.add_lesson("Вторник", 2, "Физическая культура")
-schedule.add_lesson("Среда", 2, "Математика")
-schedule.add_lesson("Среда", 3, "Основы алгоритмизации")
-schedule.add_lesson("Четверг", 1, "Информатика")
-schedule.add_lesson("Четверг", 2, "Английский язык")
-schedule.add_lesson("Четверг", 3, "Русский язык")
-schedule.add_lesson("Пятница", 1, "Программирование")
-schedule.add_lesson("Пятница", 2, "История")
+schedule.add(Lesson("Понедельник", 1, "Математика"))
+schedule.add(Lesson("Понедельник", 2, "Информатика"))
+schedule.add(Lesson("Понедельник", 3, "Английский язык"))
+schedule.add(Lesson("Вторник", 1, "Программирование"))
+schedule.add(Lesson("Вторник", 2, "Физическая культура"))
+schedule.add(Lesson("Среда", 2, "Математика"))
+schedule.add(Lesson("Среда", 3, "Основы алгоритмизации"))
+schedule.add(Lesson("Четверг", 1, "Информатика"))
+schedule.add(Lesson("Четверг", 2, "Английский язык"))
+schedule.add(Lesson("Четверг", 3, "Русский язык"))
+schedule.add(Lesson("Пятница", 1, "Программирование"))
+schedule.add(Lesson("Пятница", 2, "История"))
 
 while True:
     print()

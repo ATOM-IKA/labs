@@ -193,6 +193,8 @@ def build(blocks, out_path, frame=True, author=None, reviewer=None):
                 data = rels.encode("utf8")
             elif item.filename == "[Content_Types].xml":
                 data = ctypes.encode("utf8")
+            elif item.filename == "word/styles.xml":
+                data = re.sub(rb"<w:outlineLvl [^>]*/>", b"", data)
             elif item.filename == "word/footer1.xml":
                 data = stamp_names(data.decode("utf8"), author, reviewer).encode("utf8")
             zout.writestr(item, data)
